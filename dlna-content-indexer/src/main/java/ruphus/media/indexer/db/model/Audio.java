@@ -1,7 +1,7 @@
 package ruphus.media.indexer.db.model;
 
 
-public class Audio extends Medium {
+public abstract class Audio extends Medium {
 
 	protected Integer bitsPerSample;
 	protected String duration;
@@ -39,5 +39,5 @@ public class Audio extends Medium {
 	public void setNrAudioChannels(Integer nrAudioChannels) {
 		this.nrAudioChannels = nrAudioChannels;
 	}
-
+	
 }

@@ -8,16 +8,9 @@ import ruphus.media.indexer.db.model.Picture;
 
 public class PictureDao extends MediumDao<Picture> {
 	
-	public static final String TABLE = "pictures";
-	
 	@Override
 	protected Picture getAssetInstance() {
 		return new Picture();
-	}
-	
-	@Override
-	protected String getTable() {
-		return TABLE;
 	}
 	
 	@Override

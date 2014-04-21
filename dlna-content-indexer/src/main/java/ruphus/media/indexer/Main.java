@@ -10,7 +10,7 @@ import ruphus.media.indexer.music.MusicIndexer;
 import ruphus.media.indexer.picture.PictureIndexer;
 import ruphus.media.indexer.video.VideoIndexer;
 
-public class Main extends TCPListener{
+public class Main extends TCPListener {
 	
 	private final static Logger log = Logger.getLogger(Main.class.getName());
 	private VideoIndexer videoIndexer;
@@ -19,6 +19,8 @@ public class Main extends TCPListener{
 	
 	public Main(String configPath, int port) throws Exception {
 		super(port);
+		setName("DLNA Indexer - MAIN");
+		
 		Configuration.PATH = configPath;
 		initDatabase();
 	}
@@ -40,21 +42,6 @@ public class Main extends TCPListener{
 		}
 	}
 	
-	private void clearDatabase() throws Exception {
-		log.info("Clearing database...");
-		
-		stopIndexing();
-		
-		new FolderDao().deleteAll();
-		videoIndexer.clear();
-		musicIndexer.clear();
-		pictureIndexer.clear();
-		
-		log.info("Database is empty");
-		
-		startIndexing();
-	}
-	
 	private void startIndexing() throws Exception{
 		videoIndexer = new VideoIndexer();
 		musicIndexer = new MusicIndexer();
@@ -69,6 +56,7 @@ public class Main extends TCPListener{
 	
 	private void stopIndexing() throws InterruptedException{
 		log.info("Stopping indexing...");
+		
 		musicIndexer.exit();
 		videoIndexer.exit();
 		pictureIndexer.exit();
@@ -76,38 +64,37 @@ public class Main extends TCPListener{
 		musicIndexer.join();
 		videoIndexer.join();
 		pictureIndexer.join();
+		
+		log.info("Indexing now stopped");
+	}
+	
+	private void clearDatabase() throws Exception {
+		log.info("Clearing database...");
+		
+		stopIndexing();
+		
+		new FolderDao().deleteAll();
+		videoIndexer.clear();
+		musicIndexer.clear();
+		pictureIndexer.clear();
+		
+		log.info("Database is now empty");
+		
+		startIndexing();
 	}
 	
 	public void exit() {
 		try {
 			stopIndexing();
     		
-    		super.exit();
+			super.exit();
     		
+    		join();
     		log.info("Shutdown completed. Exiting.");
 		} 
     	catch (Throwable e) {
     		log.log(Level.SEVERE, e.getMessage(), e);
 		}
-	}
-	
-	public void run() {
-		try {
-			startIndexing();
-	        
-	        Runtime.getRuntime().addShutdownHook(new Thread() {
-	            @Override
-	            public void run() {
-	            	log.info("Shutdown requested...");
-	            	exit();
-	            }
-	        });
-	        
-	        super.run();
-		}
-        catch (Exception e) {
-        	log.log(Level.SEVERE, e.getMessage(), e);
-        }
 	}
 	
 	@Override
@@ -116,7 +103,12 @@ public class Main extends TCPListener{
 		try {
 			Configuration conf = Configuration.getInstance();
 
-			if (request == null);
+			if ("startIndexing".equals(request)) {
+				log.info("Indexer start request received.");
+				startIndexing();
+				
+				response = "started";
+			}
 			else if ("clearDatabase".equals(request)) {
 				log.info("Indexer stop request received.");
 				clearDatabase();
@@ -125,7 +117,8 @@ public class Main extends TCPListener{
 			}
 			else if ("stopIndexing".equals(request)) {
 				log.info("Indexer stop request received.");
-				exit();
+				stopIndexing();
+				
 				response = "stopped";
 			}
 			else if (request.contains(Configuration.MUSIC_PATH)) {
@@ -172,10 +165,20 @@ public class Main extends TCPListener{
 
 	public static void main(String[] args) {
 		try {
-			Main mainThread = new Main(args[0], Integer.parseInt(args[1]));
+			final Main mainThread = new Main(args[0], Integer.parseInt(args[1]));
+		
+			Runtime.getRuntime().addShutdownHook(new Thread() {
+	            @Override
+	            public void run() {
+	            	log.info("Shutdown requested...");
+	            	mainThread.exit();
+	            }
+	        });
+			
 			mainThread.start();
-		} catch (Exception e) {
-			e.printStackTrace();
+		}
+		catch (Exception e) {
+			log.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 }

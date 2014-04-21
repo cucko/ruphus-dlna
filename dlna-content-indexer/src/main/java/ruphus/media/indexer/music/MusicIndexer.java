@@ -15,6 +15,11 @@ import ruphus.media.indexer.db.model.Song;
 public class MusicIndexer extends MediaIndexer<Song>{
 	private final static Logger log = Logger.getLogger(MusicIndexer.class.getName());
 	
+	public MusicIndexer() throws Exception {
+		super(new SongDao(), new SongInfoParser());
+		setName("DLNA Indexer - Music");
+	}
+	
 	@Override
 	protected void initRootFolder() throws Exception {
 		Folder musicRootFolder = folderDao.retrieveAssetById(Constants.MUSIC_FOLDER_ID);
@@ -56,10 +61,6 @@ public class MusicIndexer extends MediaIndexer<Song>{
 			rootFolder.setLastModified(new Date());
 			folderDao.updateAsset(rootFolder);
 		}
-	}
-	
-	public MusicIndexer() throws Exception {
-		super(new SongDao(), new SongInfoParser());
 	}
 	
 	@Override

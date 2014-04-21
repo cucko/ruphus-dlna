@@ -14,9 +14,6 @@ import org.teleal.cling.support.model.item.Photo;
 import ruphus.media.dlna.model.SEC;
 import ruphus.media.dlna.model.SECMovie;
 import ruphus.media.indexer.Constants;
-import ruphus.media.indexer.db.dao.PictureDao;
-import ruphus.media.indexer.db.dao.SongDao;
-import ruphus.media.indexer.db.dao.VideoDao;
 import ruphus.media.indexer.db.model.Asset;
 import ruphus.media.indexer.db.model.Audio;
 import ruphus.media.indexer.db.model.Folder;
@@ -37,15 +34,8 @@ public class Utils {
 	private static void fillMediumProperties(Medium medium, Res res) throws IOException, URISyntaxException {
 		String ext = medium.getPath().substring( medium.getPath().lastIndexOf(".") );
 		
-		String table = null;
-		if (medium instanceof Song) table = SongDao.TABLE;
-		else if (medium instanceof Video) table = VideoDao.TABLE;
-		else if (medium instanceof Picture) table = PictureDao.TABLE;
-		
 		String mediumUrl = new StringBuffer()
-			.append(MEDIA_URL)
-			.append("?table=").append(table)
-			.append("&id=").append(medium.getId()).append(ext)
+			.append(MEDIA_URL).append("?id=").append(medium.getId()).append(ext)
 			.toString()
 		;
 		

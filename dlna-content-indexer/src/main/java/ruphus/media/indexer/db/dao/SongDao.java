@@ -10,13 +10,6 @@ import ruphus.media.indexer.db.model.Album;
 import ruphus.media.indexer.db.model.Song;
 
 public class SongDao extends AudioDao<Song> {
-
-	public static final String TABLE = "songs";
-	
-	@Override
-	protected String getTable() {
-		return TABLE;
-	}
 	
 	@Override
 	protected Song getAssetInstance() {

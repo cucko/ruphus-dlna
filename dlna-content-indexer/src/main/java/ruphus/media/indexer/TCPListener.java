@@ -9,27 +9,28 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class TCPListener extends Thread{
+public abstract class TCPListener extends Thread {
 	
 	private final static Logger log = Logger.getLogger(Main.class.getName());
 	
-	private ServerSocket serverSocket;
-	private Socket socket;
+	private ServerSocket server;
 	private boolean running;
+	private Socket socket;
 	
 	public TCPListener(int port) throws IOException {
-		serverSocket = new ServerSocket(port);
+		server = new ServerSocket(port);
 		running = true;
 	}
 	
+	abstract public String serveRequest(String request);
+	
 	public void exit() {
 		running = false;
-	}
-	
-	public void finalize() {
+		
 		log.finer("TCP Test Server stopping");
 		try {
-			if (serverSocket != null && !serverSocket.isClosed()) serverSocket.close();
+			if (socket != null && !socket.isClosed()) socket.close();
+			if (server != null && !server.isClosed()) server.close();
 		}
 		catch (Exception e) { /**/ }
 		finally {
@@ -37,32 +38,29 @@ public abstract class TCPListener extends Thread{
 		}
 	}
 	
-	abstract public String serveRequest(String request);
-	
 	public void run() {
-		log.finer("TCP Test Server starting");
 		try {
-			socket = serverSocket.accept();
-			
-			DataOutputStream toClient = new DataOutputStream(socket.getOutputStream());
-			BufferedReader fromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			
 			while (running) {
 				log.finer("TCP Server receiving");
 				
+				socket = server.accept();
+				
+				DataOutputStream toClient = new DataOutputStream(socket.getOutputStream());
+				BufferedReader fromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				
 				String request = fromClient.readLine();
-				String response = serveRequest(request);
-				
-				if (response != null) {
-					log.finer("TCP Server sending");
-					toClient.writeBytes(response+"\n");
+				if (request != null) {
+					String response = serveRequest(request);
+
+					if (response != null) {
+						log.finer("TCP Server sending");
+						toClient.writeBytes(response+"\n");
+					}
 				}
-				
-				Thread.sleep(1000);
 			}
 		}
 		catch (Exception e) {
-			log.log(Level.SEVERE, e.getMessage(), e);
+			log.log(Level.SEVERE, "TCP Server threw error: ", e);
 			exit();
 		}
 	}

@@ -20,4 +20,9 @@ public class Picture extends Medium {
 	public void setResolution(String resolution) {
 		this.resolution = resolution;
 	}
+	
+	@Override
+	public String getType() {
+		return "P";
+	}
 }

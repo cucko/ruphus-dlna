@@ -15,6 +15,11 @@ import ruphus.media.indexer.db.model.Picture;
 public class PictureIndexer extends MediaIndexer<Picture> {
 	
 	private final static Logger log = Logger.getLogger(PictureIndexer.class.getName());
+
+	public PictureIndexer() throws Exception {
+		super(new PictureDao(), new PictureInfoParser());
+		setName("DLNA Indexer - Pictures");
+	}
 	
 	@Override
 	protected void initRootFolder() throws Exception {
@@ -36,9 +41,6 @@ public class PictureIndexer extends MediaIndexer<Picture> {
 		}
 	}
 	
-	public PictureIndexer() throws Exception {
-		super(new PictureDao(), new PictureInfoParser());
-	}
 	
 	@Override
 	protected void checkSubassets(String parentId) throws Exception {

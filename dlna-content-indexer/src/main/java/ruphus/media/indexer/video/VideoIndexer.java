@@ -17,6 +17,11 @@ public class VideoIndexer extends MediaIndexer<Video> {
 	
 	private final static Logger log = Logger.getLogger(VideoIndexer.class.getName());
 	
+	public VideoIndexer() throws Exception {
+		super(new VideoDao(), new VideoInfoParser());
+		setName("DLNA Indexer - Video");
+	}
+	
 	@Override
 	protected void initRootFolder() throws Exception {
 		String path = Configuration.getInstance().getVideosPath();
@@ -37,10 +42,6 @@ public class VideoIndexer extends MediaIndexer<Video> {
 			rootFolder.setLastModified(new Date());
 			folderDao.updateAsset(rootFolder);
 		}
-	}
-
-	public VideoIndexer() throws Exception {
-		super(new VideoDao(), new VideoInfoParser());
 	}
 	
 	@Override

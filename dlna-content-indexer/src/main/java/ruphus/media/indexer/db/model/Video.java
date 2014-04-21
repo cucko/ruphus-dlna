@@ -47,5 +47,10 @@ public class Video extends Audio {
 	public void setSubtitlesSize(Integer subtitlesSize) {
 		this.subtitlesSize = subtitlesSize;
 	}
+	
+	@Override
+	public String getType() {
+		return "V";
+	}
 
 }

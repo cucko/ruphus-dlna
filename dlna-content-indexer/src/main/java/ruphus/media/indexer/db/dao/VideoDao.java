@@ -8,13 +8,6 @@ import ruphus.media.indexer.db.model.Video;
 
 public class VideoDao extends AudioDao<Video> {
 	
-	public static final String TABLE = "videos";
-	
-	@Override
-	protected String getTable() {
-		return TABLE;
-	}
-	
 	@Override
 	protected Video getAssetInstance() {
 		return new Video();

@@ -15,10 +15,6 @@ import ruphus.media.indexer.db.model.Folder;
 import ruphus.media.indexer.db.model.Medium;
 
 public abstract class MediaIndexer<M extends Medium> extends Thread {
-//	static {
-//		System.load("D:\\DATA\\Documents\\private\\workspace\\dlna-content-indexer\\src\\main\\resources\\MediaInfo.dll");
-//	}
-	
 	private final static Logger log = Logger.getLogger(MediaIndexer.class.getName());
 	
 	protected Folder rootFolder;

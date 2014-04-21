@@ -21,13 +21,16 @@ public class MediaInfo implements Closeable {
         static {
                 // libmediainfo for linux depends on libzen
                 if (Platform.isLinux()) {
-                        try {
-                                // We need to load dependencies first, because we know where our native libs are (e.g. Java Web Start Cache).
-                                // If we do not, the system will look for dependencies, but only in the library path.
-                                NativeLibrary.getInstance("zen");
-                        } catch (LinkageError e) {
-                                Logger.getLogger(MediaInfo.class.getName()).warning("Failed to preload libzen");
-                        }
+                    try {
+                            // We need to load dependencies first, because we know where our native libs are (e.g. Java Web Start Cache).
+                            // If we do not, the system will look for dependencies, but only in the library path.
+                            NativeLibrary.getInstance("zen");
+                    } catch (LinkageError e) {
+                            Logger.getLogger(MediaInfo.class.getName()).warning("Failed to preload libzen");
+                    }
+                }
+                else if (Platform.isWindows()){
+            		System.load( ClassLoader.getSystemResource("MediaInfo.dll").getFile() );
                 }
         }
         

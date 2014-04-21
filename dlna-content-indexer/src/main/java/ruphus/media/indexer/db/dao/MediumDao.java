@@ -9,11 +9,17 @@ import ruphus.media.indexer.db.model.Medium;
 public abstract class MediumDao<M extends Medium> extends AssetDao<M> {
 
 	@Override
+	protected final String getTable() {
+		return "media";
+	}
+	
+	@Override
 	protected void addInfos(M medium, Map<String, Object> columnValues) {
 		super.addInfos(medium, columnValues);
 		
 		columnValues.put("size", medium.getSize());
 		columnValues.put("mime_type", medium.getMimeType());
+		columnValues.put("type", medium.getType());
 	}
 	
 	@Override

@@ -30,4 +30,8 @@ public class Song extends Audio {
 		this.performer = performer;
 	}
 
+	@Override
+	public String getType() {
+		return "M";
+	}
 }
