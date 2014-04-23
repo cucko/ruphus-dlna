@@ -3,13 +3,13 @@ package ruphus.media.indexer.db.model;
 public class Picture extends Medium {
 
 	private String resolution;
-	private Integer colorDepth;
+	private String colorDepth;
 	
-	public void setColorDepth(Integer colorDepth) {
+	public void setColorDepth(String colorDepth) {
 		this.colorDepth = colorDepth;
 	}
 	
-	public Integer getColorDepth() {
+	public String getColorDepth() {
 		return colorDepth;
 	}
 	

@@ -40,6 +40,8 @@ public class Main extends TCPListener {
 			
 			dao.storeAsset(rootFolder);
 		}
+		
+		log.info("Database ready");
 	}
 	
 	private void startIndexing() throws Exception{

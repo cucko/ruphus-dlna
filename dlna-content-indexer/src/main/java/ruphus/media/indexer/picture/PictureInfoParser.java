@@ -32,7 +32,7 @@ public class PictureInfoParser extends MediaInfoParser<Picture> {
 				picture.setResolution( getImageInfo("Width") +"x"+ getImageInfo("Height") );
 				
 				String bitDepth = getImageInfo("BitDepth");
-				if (bitDepth != null) picture.setColorDepth( Integer.parseInt(bitDepth) );
+				if (bitDepth != null) picture.setColorDepth(bitDepth);
 			}
 			
 			return picture;

@@ -25,7 +25,7 @@ public class PictureDao extends MediumDao<Picture> {
 	protected void fillAssetProperties(Picture picture, ResultSet rs) throws SQLException {
 		super.fillAssetProperties(picture, rs);
 		
-		picture.setColorDepth( rs.getInt("color_depth") );
+		picture.setColorDepth( rs.getString("color_depth") );
 		picture.setResolution( rs.getString("resolution") );
 	}
 	

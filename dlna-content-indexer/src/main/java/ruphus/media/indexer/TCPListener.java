@@ -1,9 +1,9 @@
 package ruphus.media.indexer;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -15,7 +15,6 @@ public abstract class TCPListener extends Thread {
 	
 	private ServerSocket server;
 	private boolean running;
-	private Socket socket;
 	
 	public TCPListener(int port) throws IOException {
 		server = new ServerSocket(port);
@@ -29,7 +28,6 @@ public abstract class TCPListener extends Thread {
 		
 		log.finer("TCP Test Server stopping");
 		try {
-			if (socket != null && !socket.isClosed()) socket.close();
 			if (server != null && !server.isClosed()) server.close();
 		}
 		catch (Exception e) { /**/ }
@@ -39,30 +37,45 @@ public abstract class TCPListener extends Thread {
 	}
 	
 	public void run() {
-		try {
-			while (running) {
-				log.finer("TCP Server receiving");
-				
+
+		while (running) {
+			Socket socket = null;
+			
+			try {
 				socket = server.accept();
 				
-				DataOutputStream toClient = new DataOutputStream(socket.getOutputStream());
 				BufferedReader fromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				
 				String request = fromClient.readLine();
+				log.finer("TCP Server receiving request: "+request);
+				
 				if (request != null) {
 					String response = serveRequest(request);
 
 					if (response != null) {
-						log.finer("TCP Server sending");
-						toClient.writeBytes(response+"\n");
+						log.finer("TCP Server sending response "+response);
+						PrintWriter toClient = new PrintWriter(socket.getOutputStream(), true);
+						toClient.println(response);
 					}
 				}
 			}
+			catch (Exception e) {
+				log.log(Level.SEVERE, "TCP Server threw error: ", e);
+				running = false;
+			}
+			finally {
+				try {
+					if (socket != null && !socket.isClosed()) socket.close();
+				}
+				catch (Exception e) {
+					log.log(Level.SEVERE, "TCP Server threw error: ", e);
+					running = false;
+				}
+			}
+			
 		}
-		catch (Exception e) {
-			log.log(Level.SEVERE, "TCP Server threw error: ", e);
-			exit();
-		}
+		
+		exit();
 	}
 	
 }

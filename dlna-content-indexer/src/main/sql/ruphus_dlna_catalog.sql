@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `media` (
   `album_performer` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
   `album_tracks` int(2) unsigned DEFAULT NULL,
   `album_released` varchar(16) COLLATE latin1_general_cs DEFAULT NULL,
-  `bitrate` int(10) unsigned NOT NULL,
+  `bitrate` int(10) unsigned DEFAULT NULL,
   `subtitles_title` varchar(128) COLLATE latin1_general_cs DEFAULT NULL,
   `subtitles_size` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
