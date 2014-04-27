@@ -3,6 +3,7 @@ package ruphus.media.indexer.music;
 import java.io.File;
 import java.util.UnknownFormatConversionException;
 
+import net.sourceforge.filebot.mediainfo.MediaInfo.StreamKind;
 import ruphus.media.indexer.AudioInfoParser;
 import ruphus.media.indexer.Utils;
 import ruphus.media.indexer.db.model.Album;
@@ -12,7 +13,7 @@ public class SongInfoParser extends AudioInfoParser<Song> {
 	
 	@Override
 	public boolean isInspectable(File file) throws UnknownFormatConversionException{
-		return getOnlyMimeType(file).startsWith("audio");
+		return getMediaType(file) == StreamKind.Audio;
 	}
 	
 	protected Song getSong(File file) throws UnknownFormatConversionException {
@@ -51,7 +52,7 @@ public class SongInfoParser extends AudioInfoParser<Song> {
 			album.setReleased(released);
 			
 			String nTracks = getGeneralInfo("Track/Position_Total");
-			if (nTracks != null) album.setNTracks( Integer.parseInt(nTracks) );
+			album.setNTracks( nTracks );
 			
 			song.setAlbum(album);
 			song.setPerformer( getGeneralInfo("Performer") );

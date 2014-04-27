@@ -2,25 +2,25 @@ package ruphus.media.indexer.db.model;
 
 public class Video extends Audio {
 
-	private Integer bitrate;
-	private Integer colorDepth;
+	private String bitrate;
+	private String colorDepth;
 	private String resolution;
 	private String subtitlesTitle;
 	private Integer subtitlesSize;
 
-	public Integer getBitrate() {
+	public String getBitrate() {
 		return bitrate;
 	}
 
-	public void setBitrate(Integer bitrate) {
+	public void setBitrate(String bitrate) {
 		this.bitrate = bitrate;
 	}
 
-	public Integer getColorDepth() {
+	public String getColorDepth() {
 		return colorDepth;
 	}
 
-	public void setColorDepth(Integer colorDepth) {
+	public void setColorDepth(String colorDepth) {
 		this.colorDepth = colorDepth;
 	}
 

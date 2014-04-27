@@ -28,5 +28,5 @@ public abstract class MediumDao<M extends Medium> extends AssetDao<M> {
 		medium.setSize( rs.getLong("size"));
 		medium.setMimeType( rs.getString("mime_type") );
 	}
-	
+
 }

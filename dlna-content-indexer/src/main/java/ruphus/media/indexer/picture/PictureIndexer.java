@@ -17,13 +17,17 @@ public class PictureIndexer extends MediaIndexer<Picture> {
 	private final static Logger log = Logger.getLogger(PictureIndexer.class.getName());
 
 	public PictureIndexer() throws Exception {
-		super(new PictureDao(), new PictureInfoParser());
+		mediumDao = new PictureDao();
+		infoParser = new PictureInfoParser();
+		
 		setName("DLNA Indexer - Pictures");
 	}
 	
 	@Override
 	protected void initRootFolder() throws Exception {
 		String path = Configuration.getInstance().getPicturesPath();
+		checkFolder(path);
+		
 		rootFolder = folderDao.retrieveAssetById(Constants.PICTURES_FOLDER_ID);
 		if (rootFolder == null) {
 			rootFolder = new Folder();

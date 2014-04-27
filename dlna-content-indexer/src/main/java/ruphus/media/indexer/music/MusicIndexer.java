@@ -16,12 +16,17 @@ public class MusicIndexer extends MediaIndexer<Song>{
 	private final static Logger log = Logger.getLogger(MusicIndexer.class.getName());
 	
 	public MusicIndexer() throws Exception {
-		super(new SongDao(), new SongInfoParser());
+		mediumDao = new SongDao();
+		infoParser = new SongInfoParser();
+		
 		setName("DLNA Indexer - Music");
 	}
 	
 	@Override
 	protected void initRootFolder() throws Exception {
+		String path = Configuration.getInstance().getMusicPath();
+		checkFolder(path);
+		
 		Folder musicRootFolder = folderDao.retrieveAssetById(Constants.MUSIC_FOLDER_ID);
 		if (musicRootFolder == null) {
 			musicRootFolder = new Folder();
@@ -43,8 +48,6 @@ public class MusicIndexer extends MediaIndexer<Song>{
 			artistsFolder.setLastModified(new Date());
 			folderDao.storeAsset(artistsFolder);
 		}
-		
-		String path = Configuration.getInstance().getMusicPath();
 		
 		rootFolder = folderDao.retrieveAssetById(Constants.MUSIC_TREE_FOLDER_ID);
 		if (rootFolder == null) {

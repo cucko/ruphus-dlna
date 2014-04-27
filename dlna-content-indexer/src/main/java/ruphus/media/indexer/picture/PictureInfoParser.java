@@ -16,7 +16,7 @@ public class PictureInfoParser extends MediaInfoParser<Picture> {
 	
 	@Override
 	public boolean isInspectable(File file) throws UnknownFormatConversionException {
-		return getOnlyMimeType(file).startsWith("image");
+		return getMediaType(file) == StreamKind.Image;
 	}
 
 	@Override

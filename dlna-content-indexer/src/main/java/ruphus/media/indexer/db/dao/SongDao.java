@@ -54,13 +54,13 @@ public class SongDao extends AudioDao<Song> {
 		super.fillAssetProperties(song, rs);
 		
 		Album album = new Album();
-		album.setNTracks( rs.getInt("album_tracks") );
+		album.setNTracks( rs.getString("album_tracks") );
 		album.setPerformer( rs.getString("album_performer") );
 		album.setReleased( rs.getString("album_released") );
 		album.setTitle( rs.getString("album_title") );
 		
 		song.setPerformer( rs.getString("performer") );
-		song.setPosition( rs.getInt("position") );
+		song.setPosition( rs.getString("position") );
 		song.setAlbum(album);
 	}
 
@@ -138,7 +138,7 @@ public class SongDao extends AudioDao<Song> {
 				Album album = new Album();
 				album.setTitle( rs.getString("album_title") );
 				album.setReleased( rs.getString("album_released") );
-				album.setNTracks( rs.getInt("children") );
+				album.setNTracks( rs.getString("children") );
 				album.setPerformer(performer);
 				
 				albumList.add(album);

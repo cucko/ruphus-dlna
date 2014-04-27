@@ -5,17 +5,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import ruphus.media.indexer.db.dao.FolderDao;
+import ruphus.media.indexer.db.dao.VideoDao;
 import ruphus.media.indexer.db.model.Folder;
-import ruphus.media.indexer.music.MusicIndexer;
-import ruphus.media.indexer.picture.PictureIndexer;
 import ruphus.media.indexer.video.VideoIndexer;
 
 public class Main extends TCPListener {
 	
 	private final static Logger log = Logger.getLogger(Main.class.getName());
 	private VideoIndexer videoIndexer;
-	private MusicIndexer musicIndexer;
-	private PictureIndexer pictureIndexer;
+//	private MusicIndexer musicIndexer;
+//	private PictureIndexer pictureIndexer;
+	private boolean indexing;
 	
 	public Main(String configPath, int port) throws Exception {
 		super(port);
@@ -46,43 +46,44 @@ public class Main extends TCPListener {
 	
 	private void startIndexing() throws Exception{
 		videoIndexer = new VideoIndexer();
-		musicIndexer = new MusicIndexer();
-		pictureIndexer = new PictureIndexer();
+//		musicIndexer = new MusicIndexer();
+//		pictureIndexer = new PictureIndexer();
 		
 		videoIndexer.start();
-		musicIndexer.start();
-		pictureIndexer.start();
+//		musicIndexer.start();
+//		pictureIndexer.start();
 		
+		indexing = true;
 		log.info("Indexing started");
 	}
 	
 	private void stopIndexing() throws InterruptedException{
 		log.info("Stopping indexing...");
 		
-		musicIndexer.exit();
 		videoIndexer.exit();
-		pictureIndexer.exit();
+//		musicIndexer.exit();
+//		pictureIndexer.exit();
 		
-		musicIndexer.join();
 		videoIndexer.join();
-		pictureIndexer.join();
+//		musicIndexer.join();
+//		pictureIndexer.join();
 		
+		indexing = false;
 		log.info("Indexing now stopped");
 	}
 	
 	private void clearDatabase() throws Exception {
 		log.info("Clearing database...");
 		
-		stopIndexing();
+		boolean wasIndexing = indexing;
+		if (indexing) stopIndexing();
 		
 		new FolderDao().deleteAll();
-		videoIndexer.clear();
-		musicIndexer.clear();
-		pictureIndexer.clear();
+		new VideoDao().deleteAll();
 		
 		log.info("Database is now empty");
 		
-		startIndexing();
+		if (wasIndexing) startIndexing();
 	}
 	
 	public void exit() {
@@ -112,7 +113,7 @@ public class Main extends TCPListener {
 				response = "started";
 			}
 			else if ("clearDatabase".equals(request)) {
-				log.info("Indexer stop request received.");
+				log.info("Database clear request received.");
 				clearDatabase();
 				
 				response = "cleared";

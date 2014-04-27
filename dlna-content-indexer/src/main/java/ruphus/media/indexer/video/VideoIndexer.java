@@ -18,13 +18,16 @@ public class VideoIndexer extends MediaIndexer<Video> {
 	private final static Logger log = Logger.getLogger(VideoIndexer.class.getName());
 	
 	public VideoIndexer() throws Exception {
-		super(new VideoDao(), new VideoInfoParser());
+		mediumDao = new VideoDao();
+		infoParser = new VideoInfoParser();
+		
 		setName("DLNA Indexer - Video");
 	}
 	
 	@Override
 	protected void initRootFolder() throws Exception {
 		String path = Configuration.getInstance().getVideosPath();
+		checkFolder(path);
 				
 		rootFolder = folderDao.retrieveAssetById(Constants.VIDEO_FOLDER_ID);
 		if (rootFolder == null) {
@@ -63,13 +66,11 @@ public class VideoIndexer extends MediaIndexer<Video> {
 		Video video = mediumDao.retrieveAssetByPath(filePath);
 
 		if (video == null) {
-			log.finer("Found new video: "+child.getAbsolutePath());
+			log.finer("Found new video: "+filePath);
 			
 			video = infoParser.parse(child);
 			video.setPath(filePath);
 			video.setParentId(parentId);
-			
-			lookForSubtitles(video, child);
 			
 			mediumDao.storeAsset(video);
 		}

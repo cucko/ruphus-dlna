@@ -23,8 +23,8 @@ public abstract class AudioDao<A extends Audio> extends MediumDao<A> {
 		super.fillAssetProperties(audio, rs);
 		
 		audio.setDuration( rs.getString("duration") );
-		audio.setBitsPerSample( rs.getInt("bits_per_sample") );
-		audio.setSampleFrequency( rs.getInt("sample_frequency") );
-		audio.setNrAudioChannels( rs.getInt("nr_audio_channels") );
+		audio.setBitsPerSample( rs.getString("bits_per_sample") );
+		audio.setSampleFrequency( rs.getString("sample_frequency") );
+		audio.setNrAudioChannels( rs.getString("nr_audio_channels") );
 	}
 }

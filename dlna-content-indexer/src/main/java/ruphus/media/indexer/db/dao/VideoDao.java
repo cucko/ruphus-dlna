@@ -31,8 +31,8 @@ public class VideoDao extends AudioDao<Video> {
 	protected void fillAssetProperties(Video video, ResultSet rs) throws SQLException {
 		super.fillAssetProperties(video, rs);
 		
-		video.setBitrate( rs.getInt("bitrate") );
-		video.setColorDepth( rs.getInt("color_depth") );
+		video.setBitrate( rs.getString("bitrate") );
+		video.setColorDepth( rs.getString("color_depth") );
 		video.setResolution( rs.getString("resolution") );
 		video.setSubtitlesSize( rs.getInt("subtitles_size") );
 		video.setSubtitlesTitle( rs.getString("subtitles_title") );

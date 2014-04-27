@@ -18,7 +18,7 @@ public class VideoInfoParser extends AudioInfoParser<Video> {
 	
 	@Override
 	public boolean isInspectable(File file) throws UnknownFormatConversionException {
-		return getOnlyMimeType(file).startsWith("video");
+		return getMediaType(file) == StreamKind.Video;
 	}
 	
 	@Override
@@ -31,14 +31,14 @@ public class VideoInfoParser extends AudioInfoParser<Video> {
 			
 			fillMediumProperties(video, file);
 			fillAudioProperties(video, file);
-
+			
 			int videoStreams = info.streamCount(StreamKind.Video);
 				
-			if (videoStreams > 1) log.warning("Media item "+file.getAbsolutePath()+" has "+videoStreams+" video streams");
+			if (videoStreams > 1) log.warning("Media item "+file.getAbsolutePath()+" has "+videoStreams+" video streams. Taking first.");
 			else if (videoStreams == 1) {
 				video.setTitle(filePrefix);
-				video.setBitrate( Integer.parseInt(getVideoInfo(0,"BitRate")) );
-				video.setColorDepth( Integer.parseInt(getVideoInfo(0, "BitDepth")) );
+				video.setBitrate( getVideoInfo(0,"BitRate") );
+				video.setColorDepth( getVideoInfo(0, "BitDepth") );
 				video.setResolution( getVideoInfo(0, "Width") +"x"+ getVideoInfo(0, "Height") );
 				video.setDuration( getGeneralInfo("Duration/String3") );
 			}

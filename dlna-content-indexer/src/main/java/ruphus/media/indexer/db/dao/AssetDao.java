@@ -60,7 +60,7 @@ public abstract class AssetDao<A extends Asset> extends JdbcTemplate {
 		try {
 			String folderSql = new StringBuffer()
 				.append("SELECT * FROM ").append( getTable() )
-				.append(" WHERE parent_id = ?" )
+				.append(" WHERE parent_id = ?")
 				.append(" ORDER BY ").append(orderByClause)
 				.toString()
 			;
@@ -84,13 +84,13 @@ public abstract class AssetDao<A extends Asset> extends JdbcTemplate {
 	public A retrieveAssetByPath(String path) throws Exception {
 		ResultSet rs = null;
 		try {
-			String folderSql = new StringBuffer()
+			String sql = new StringBuffer()
 				.append("SELECT * FROM ").append( getTable() )
 				.append(" WHERE path = ?" )
 				.toString()
 			;
 			
-			rs = query(folderSql, path);
+			rs = query(sql, path);
 			
 			A asset = null;
 			if (rs.first()) {

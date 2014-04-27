@@ -35,12 +35,17 @@ public abstract class MediaInfoParser<M extends Medium> {
 		return getInfo(StreamKind.General, 0, parameter);
 	}
 	
-	protected String getOnlyMimeType(File file) throws UnknownFormatConversionException {
+	protected StreamKind getMediaType(File file) throws UnknownFormatConversionException {
 		try {
 			info.open(file);
-			String mimeType = getGeneralInfo("InternetMediaType");
-			if (mimeType == null) throw new UnknownFormatConversionException("Unparseable mime type for "+file.getAbsolutePath());
-			return mimeType;
+			StreamKind sk = null;
+			
+			if (info.streamCount(StreamKind.Video) > 0) sk = StreamKind.Video;
+			else if (info.streamCount(StreamKind.Audio) > 0) sk = StreamKind.Audio;
+			else if (info.streamCount(StreamKind.Image) > 0) sk = StreamKind.Image;
+			else throw new UnknownFormatConversionException("Unparseable mime type for "+file.getAbsolutePath());
+			
+			return sk;
 		}
 		finally {
 			if (info != null) info.close();
@@ -48,7 +53,14 @@ public abstract class MediaInfoParser<M extends Medium> {
 	}
 	
 	protected void fillMediumProperties(Medium medium, File file) {
-		medium.setMimeType( getGeneralInfo("InternetMediaType") );
+		String mimeType = getGeneralInfo("InternetMediaType");
+		if (mimeType == null) {
+			String format = getGeneralInfo("Format");
+			
+			if ("Matroska".equals(format)) mimeType = Constants.MKV_MIME;
+			else throw new UnknownFormatConversionException("Unparseable format ("+format+") for "+file.getAbsolutePath());
+		}
+		medium.setMimeType(mimeType);
 		medium.setSize( Long.parseLong(getGeneralInfo("FileSize")) );
 		medium.setLastModified( new Date(file.lastModified()) );
 	}

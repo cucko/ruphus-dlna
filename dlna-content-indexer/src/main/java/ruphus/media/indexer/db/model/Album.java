@@ -5,7 +5,7 @@ public class Album {
 	protected String title;
 	protected String performer;
 	protected String released;
-	protected Integer nTracks;
+	protected String nTracks;
 
 	public void setTitle(String title) {
 		this.title = title;
@@ -15,11 +15,11 @@ public class Album {
 		return title;
 	}
 	
-	public void setNTracks(Integer nTracks) {
+	public void setNTracks(String nTracks) {
 		this.nTracks = nTracks;
 	}
 	
-	public Integer getNTracks() {
+	public String getNTracks() {
 		return nTracks;
 	}
 

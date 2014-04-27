@@ -3,7 +3,7 @@ package ruphus.media.indexer.db.model;
 public class Song extends Audio {
 
 	protected Album album;
-	protected Integer position;
+	protected String position;
 	protected String performer;
 
 	public Album getAlbum() {
@@ -14,11 +14,11 @@ public class Song extends Audio {
 		this.album = album;
 	}
 
-	public Integer getPosition() {
+	public String getPosition() {
 		return position;
 	}
 
-	public void setPosition(Integer position) {
+	public void setPosition(String position) {
 		this.position = position;
 	}
 

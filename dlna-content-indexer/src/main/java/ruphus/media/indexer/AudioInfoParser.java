@@ -17,12 +17,12 @@ public abstract class AudioInfoParser<A extends Audio> extends MediaInfoParser<A
 	protected void fillAudioProperties(Audio audio, File file) {
 		int audioStreams = info.streamCount(StreamKind.Audio);
 		
-		if (audioStreams > 1) log.warning("Media item "+file.getAbsolutePath()+" has "+audioStreams+" audio streams");
-		else if (audioStreams == 1){
-			String bitRate = getAudioInfo(0, "BitRate");
-			if (bitRate != null) audio.setBitsPerSample( Integer.parseInt(bitRate) );
-			audio.setSampleFrequency( Integer.parseInt(getAudioInfo(0, "SamplingRate")) );
-			audio.setNrAudioChannels( Integer.parseInt(getAudioInfo(0, "Channel(s)")) );
+		if (audioStreams > 1) {
+			log.warning("Media item "+file.getAbsolutePath()+" has "+audioStreams+" audio streams");
 		}
+		
+		audio.setBitsPerSample( getAudioInfo(0, "BitRate") );
+		audio.setSampleFrequency( getAudioInfo(0, "SamplingRate") );
+		audio.setNrAudioChannels( getAudioInfo(0, "Channel(s)") );
 	}
 }

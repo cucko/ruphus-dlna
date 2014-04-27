@@ -3,16 +3,16 @@ package ruphus.media.indexer.db.model;
 
 public abstract class Audio extends Medium {
 
-	protected Integer bitsPerSample;
+	protected String bitsPerSample;
 	protected String duration;
-	protected Integer sampleFrequency;
-	protected Integer nrAudioChannels;
+	protected String sampleFrequency;
+	protected String nrAudioChannels;
 	
-	public Integer getBitsPerSample() {
+	public String getBitsPerSample() {
 		return bitsPerSample;
 	}
 
-	public void setBitsPerSample(Integer bitsPerSample) {
+	public void setBitsPerSample(String bitsPerSample) {
 		this.bitsPerSample = bitsPerSample;
 	}
 
@@ -24,19 +24,19 @@ public abstract class Audio extends Medium {
 		this.duration = duration;
 	}
 
-	public Integer getSampleFrequency() {
+	public String getSampleFrequency() {
 		return sampleFrequency;
 	}
 
-	public void setSampleFrequency(Integer sampleFrequency) {
+	public void setSampleFrequency(String sampleFrequency) {
 		this.sampleFrequency = sampleFrequency;
 	}
 
-	public Integer getNrAudioChannels() {
+	public String getNrAudioChannels() {
 		return nrAudioChannels;
 	}
 
-	public void setNrAudioChannels(Integer nrAudioChannels) {
+	public void setNrAudioChannels(String nrAudioChannels) {
 		this.nrAudioChannels = nrAudioChannels;
 	}
 	
