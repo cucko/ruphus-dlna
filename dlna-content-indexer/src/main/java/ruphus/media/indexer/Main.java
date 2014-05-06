@@ -106,7 +106,11 @@ public class Main extends TCPListener {
 		try {
 			Configuration conf = Configuration.getInstance();
 
-			if ("startIndexing".equals(request)) {
+			if ("getStatus".equals(request)){
+				if (indexing) response = "started";
+				else response = "stopped";
+			}
+			else if ("startIndexing".equals(request)) {
 				log.info("Indexer start request received.");
 				startIndexing();
 				
@@ -116,7 +120,8 @@ public class Main extends TCPListener {
 				log.info("Database clear request received.");
 				clearDatabase();
 				
-				response = "cleared";
+				if (indexing) response = "started";
+				else response = "stopped";
 			}
 			else if ("stopIndexing".equals(request)) {
 				log.info("Indexer stop request received.");

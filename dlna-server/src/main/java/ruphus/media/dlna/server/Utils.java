@@ -67,7 +67,7 @@ public class Utils {
 		MusicTrack mt = new MusicTrack();
 		mt.setAlbum( song.getAlbum().getTitle() );
 		mt.setCreator( song.getPerformer() );
-		mt.setOriginalTrackNumber( song.getPosition() );
+		mt.setOriginalTrackNumber(Integer.parseInt( song.getPosition() ) );
 		mt.addResource(songRes);
 		
 		fillAssetProperties(song, mt);

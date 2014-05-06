@@ -3,6 +3,7 @@ package ruphus.media.dlna.server;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.teleal.cling.model.message.UpnpHeaders;
 import org.teleal.cling.model.message.control.IncomingActionRequestMessage;
 import org.teleal.cling.model.message.header.UpnpHeader;
 import org.teleal.cling.protocol.sync.ReceivingAction;
@@ -49,43 +50,51 @@ public class MediaContentDirectory extends AbstractContentDirectoryService {
 		pictureDao = new PictureDao();
 	}
 	
+	private static String getHeaderView(UpnpHeaders headers) {
+		StringBuffer headerStr = new StringBuffer();
+		
+		for (String header : headers.keySet()) {
+			for (String value : headers.get(header)) {
+				headerStr.append(header).append("=").append(value).append(" ");
+			}
+		}
+		
+		return headerStr.toString();
+	}
+	
+	private static String getParamsView(
+		String objectID, BrowseFlag browseFlag, String filter, 
+		long firstResult, long maxResults, SortCriterion[] orderby) {
+		
+		return new StringBuffer()
+			.append("[browsing mode: ").append(browseFlag.name()).append("]")
+			.append("[objectId: ").append(objectID).append("]")
+			.append("[firstResult: ").append(firstResult).append("]")
+			.append("[maxResults: ").append(maxResults).append("]")
+			.append("[filter: ").append(filter).append("]")
+			.toString()
+		;
+	}
+	
 	@Override
 	public BrowseResult browse(
 		String objectID, BrowseFlag browseFlag, String filter, 
 		long firstResult, long maxResults, SortCriterion[] orderby
     ) throws ContentDirectoryException {
 		
+		IncomingActionRequestMessage message = ReceivingAction.getRequestMessage();
 		try {
-			IncomingActionRequestMessage message = ReceivingAction.getRequestMessage();
-			String userAgent = message.getHeaders().get(UpnpHeader.Type.USER_AGENT.getHttpName()).get(0);
+			String userAgent = message.getHeaders().getFirstHeader(UpnpHeader.Type.USER_AGENT.getHttpName());
 			
 			boolean secRequest = userAgent.contains(SEC.USER_AGENT);
 			
 			if (log.isLoggable(Level.FINER)) {
 				
 				if (log.isLoggable(Level.FINEST)) {
-					StringBuffer headers = new StringBuffer("[");
-					
-					for (String header : message.getHeaders().keySet()) {
-						for (String value : message.getHeaders().get(header)) {
-							headers.append(header).append("=").append(value).append(" ");
-						}
-					}
-					
-					log.finest( headers.append("]").toString() );
+					log.finest( getHeaderView(message.getHeaders()) );
 				}
 				
-				String paramsLog = new StringBuffer()
-					.append("[secRequest: ").append(secRequest).append("]")
-					.append("[browsing mode: ").append(browseFlag.name()).append("]")
-					.append("[objectId: ").append(objectID).append("]")
-					.append("[firstResult: ").append(firstResult).append("]")
-					.append("[maxResults: ").append(maxResults).append("]")
-					.append("[filter: ").append(filter).append("]")
-					.toString()
-				;
-				
-				log.finer(paramsLog);
+				log.finer( getParamsView(objectID, browseFlag, filter, firstResult, maxResults, orderby) );
 			}
 			
 			DIDLContent didl = new DIDLContent();
@@ -136,7 +145,7 @@ public class MediaContentDirectory extends AbstractContentDirectoryService {
 						albumFolder.setTitle( album.getTitle() );
 						albumFolder.setArtists(new PersonWithRole[]{new PersonWithRole(album.getPerformer())});
 						albumFolder.setDate( album.getReleased() );
-						albumFolder.setChildCount( album.getNTracks() );
+						albumFolder.setChildCount( Integer.parseInt( album.getNTracks() ) );
 						
 						didl.addContainer(albumFolder);
 					}
@@ -190,7 +199,21 @@ public class MediaContentDirectory extends AbstractContentDirectoryService {
 			return new BrowseResult(outXml, count, count);
 		}
 		catch (Exception e) {
-			log.log(Level.SEVERE, e.getMessage(), e);
+			
+			String messageBuf = new StringBuffer("Error managing following message:")
+				.append("\n=============================================================")
+				.append("\nAction: ").append(message.getAction().getName())
+				.append("\nHeaders: ")
+				.append(getHeaderView(message.getHeaders()))
+				.append("\nParams: ")
+				.append(getParamsView(objectID, browseFlag, filter, firstResult, maxResults, orderby))
+				.append("\nBody:\n")
+				.append(message.getBodyString())
+				.append("\n\n=============================================================")
+				.toString()
+			;
+			
+			log.log(Level.SEVERE, messageBuf, e);
             throw new ContentDirectoryException(ContentDirectoryErrorCode.CANNOT_PROCESS, e.getMessage());
         }
 	}

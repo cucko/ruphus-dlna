@@ -43,6 +43,7 @@ public abstract class MediaInfoParser<M extends Medium> {
 			if (info.streamCount(StreamKind.Video) > 0) sk = StreamKind.Video;
 			else if (info.streamCount(StreamKind.Audio) > 0) sk = StreamKind.Audio;
 			else if (info.streamCount(StreamKind.Image) > 0) sk = StreamKind.Image;
+			else if (info.streamCount(StreamKind.Text) > 0) sk = StreamKind.Text;
 			else throw new UnknownFormatConversionException("Unparseable mime type for "+file.getAbsolutePath());
 			
 			return sk;
@@ -60,6 +61,7 @@ public abstract class MediaInfoParser<M extends Medium> {
 			if ("Matroska".equals(format)) mimeType = Constants.MKV_MIME;
 			else throw new UnknownFormatConversionException("Unparseable format ("+format+") for "+file.getAbsolutePath());
 		}
+		
 		medium.setMimeType(mimeType);
 		medium.setSize( Long.parseLong(getGeneralInfo("FileSize")) );
 		medium.setLastModified( new Date(file.lastModified()) );
